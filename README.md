@@ -25,7 +25,6 @@
 >
 > - Depth (first line): Low / High; `—` = unassigned.
 > - Status (second line): Pending / Active / Complete.
-> - Repository signals checked between 2026-09-30 and 2026-10-08; later checks are dated in their sections.
 > - Source language: `ZH` = primarily Chinese documentation; `EN` = primarily English documentation; `ZH/EN` = substantial documentation in both languages.
 
 ### 1.1 Business Application Systems
@@ -132,7 +131,7 @@
 
 ### 1.12 Insurance and Banking Systems
 
-> References for studying insurance business workflows and banking operations. Repository signals checked on 2026-10-17.
+> References for studying insurance business workflows and banking operations.
 
 | Repository | Study | Description | Popularity | Last Commit | Repository Location |
 | --- | --- | --- | --- | --- | --- |
