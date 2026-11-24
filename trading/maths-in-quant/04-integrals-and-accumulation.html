@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Definite and Improper Integrals</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f7f8fa, #0b0d11);
+      --surface: light-dark(#ffffff, #12151b);
+      --surface-soft: light-dark(#f0f2f5, #191d25);
+      --text: light-dark(#17191f, #f1f3f7);
+      --muted: light-dark(#68707d, #98a1b1);
+      --line: light-dark(#d9dde4, #2b313c);
+      --grid: light-dark(#e9ecf1, #202631);
+      --accent: light-dark(#245cff, #7d9cff);
+      --accent-soft: light-dark(rgba(36, 92, 255, .18), rgba(125, 156, 255, .22));
+      --tail: light-dark(rgba(36, 92, 255, .07), rgba(125, 156, 255, .08));
+      --shadow: light-dark(0 18px 50px rgba(19, 27, 45, .08), 0 22px 60px rgba(0, 0, 0, .28));
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, input { font: inherit; }
+
+    main {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 56px 0 72px;
+    }
+
+    header {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(32px, 5vw, 58px);
+      font-weight: 500;
+      letter-spacing: -.045em;
+      line-height: 1.02;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .lab {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modes {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 12px;
+      background: var(--surface-soft);
+    }
+
+    .mode {
+      border: 0;
+      border-radius: 9px;
+      padding: 9px 13px;
+      background: transparent;
+      color: var(--muted);
+      transition: background .18s ease, color .18s ease;
+    }
+
+    .mode[aria-pressed="true"] {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .result {
+      color: var(--muted);
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .result strong {
+      color: var(--text);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .visual {
+      padding: 12px 18px 0;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 330px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      padding: 20px;
+      border-top: 1px solid var(--line);
+    }
+
+    .range-block {
+      display: grid;
+      gap: 9px;
+    }
+
+    .range-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    output {
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .grow {
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 10px 14px;
+      background: var(--surface-soft);
+      color: var(--text);
+    }
+
+    .grow[hidden] { display: none; }
+
+    .explanation {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 24px;
+      padding: 22px 20px 24px;
+      border-top: 1px solid var(--line);
+    }
+
+    .formula {
+      font-family: "STIX Two Math", "Cambria Math", Georgia, serif;
+      font-size: clamp(20px, 3vw, 30px);
+      line-height: 1.4;
+    }
+
+    .meaning {
+      align-self: center;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 720px) {
+      main { width: min(100% - 20px, 1120px); padding-top: 28px; }
+      .toolbar { align-items: stretch; flex-direction: column; }
+      .result { text-align: left; }
+      .controls, .explanation { grid-template-columns: 1fr; }
+      .grow { width: 100%; }
+      svg { min-height: 270px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <span class="eyebrow">Chapter 4 · Integral Explorer</span>
+      <h1>See where the area ends.</h1>
+      <p>The same curve explains both definite and improper integrals.</p>
+    </header>
+
+    <section class="lab" aria-labelledby="integral-title">
+      <div class="toolbar">
+        <div class="modes" role="group" aria-label="Integral type">
+          <button class="mode" type="button" data-mode="definite" aria-pressed="true">Definite integral</button>
+          <button class="mode" type="button" data-mode="improper" aria-pressed="false">Improper integral</button>
+        </div>
+        <div class="result" aria-live="polite">
+          Shaded area <strong id="area-value">0.9502</strong>
+        </div>
+      </div>
+
+      <div class="visual">
+        <svg id="integral-chart" viewBox="0 0 900 420" role="img" aria-labelledby="integral-title integral-description">
+          <title id="integral-title">Area under the curve y equals e to the negative x</title>
+          <desc id="integral-description">An interactive graph comparing a finite endpoint with an endpoint that approaches infinity.</desc>
+        </svg>
+      </div>
+
+      <div class="controls">
+        <label class="range-block" for="endpoint">
+          <span class="range-head"><span id="endpoint-label">Ending point b</span><output id="endpoint-value">3.0</output></span>
+          <input id="endpoint" type="range" min="0.4" max="8" value="3" step="0.1">
+        </label>
+        <button class="grow" id="grow-button" type="button" hidden>Let b grow →</button>
+      </div>
+
+      <div class="explanation">
+        <div class="formula" id="formula">∫₀ᵇ e⁻ˣ dx = 1 − e⁻ᵇ</div>
+        <div class="meaning" id="meaning">The shaded area stops at the chosen ending point.</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const svg = document.getElementById('integral-chart');
+    const slider = document.getElementById('endpoint');
+    const endpointValue = document.getElementById('endpoint-value');
+    const endpointLabel = document.getElementById('endpoint-label');
+    const areaValue = document.getElementById('area-value');
+    const formula = document.getElementById('formula');
+    const meaning = document.getElementById('meaning');
+    const growButton = document.getElementById('grow-button');
+    const modeButtons = [...document.querySelectorAll('.mode')];
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let mode = 'definite';
+    let animationFrame = null;
+
+    const NS = 'http://www.w3.org/2000/svg';
+    const W = 900;
+    const H = 420;
+    const margin = { top: 30, right: 34, bottom: 58, left: 70 };
+    const plotW = W - margin.left - margin.right;
+    const plotH = H - margin.top - margin.bottom;
+    const xMax = 8;
+    const yMax = 1.08;
+    const sx = x => margin.left + (x / xMax) * plotW;
+    const sy = y => margin.top + plotH - (y / yMax) * plotH;
+
+    function css(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function el(name, attrs = {}, text = '') {
+      const node = document.createElementNS(NS, name);
+      Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+      if (text) node.textContent = text;
+      return node;
+    }
+
+    function samples(end, count = 180) {
+      return Array.from({ length: count + 1 }, (_, i) => {
+        const x = end * i / count;
+        return [x, Math.exp(-x)];
+      });
+    }
+
+    function linePath(points) {
+      return points.map(([x, y], i) => `${i ? 'L' : 'M'}${sx(x).toFixed(2)},${sy(y).toFixed(2)}`).join(' ');
+    }
+
+    function areaPath(end) {
+      const points = samples(end, Math.max(40, Math.round(end * 30)));
+      return `M${sx(0)},${sy(0)} ${linePath(points).replace(/^M/, 'L')} L${sx(end)},${sy(0)} Z`;
+    }
+
+    function addText(x, y, text, attrs = {}) {
+      svg.appendChild(el('text', {
+        x, y,
+        fill: css('--muted'),
+        'font-size': 12,
+        'font-family': 'Inter, system-ui, sans-serif',
+        ...attrs
+      }, text));
+    }
+
+    function draw() {
+      svg.replaceChildren(
+        el('title', { id: 'integral-title' }, 'Area under the curve y equals e to the negative x'),
+        el('desc', { id: 'integral-description' }, 'An interactive graph comparing a finite endpoint with an endpoint that approaches infinity.')
+      );
+
+      const line = css('--line');
+      const grid = css('--grid');
+      const accent = css('--accent');
+      const fill = css('--accent-soft');
+      const tail = css('--tail');
+      const text = css('--text');
+      const b = Number(slider.value);
+
+      [0, .25, .5, .75, 1].forEach(y => {
+        svg.appendChild(el('line', { x1: sx(0), y1: sy(y), x2: sx(xMax), y2: sy(y), stroke: grid, 'stroke-width': 1 }));
+        addText(sx(0) - 14, sy(y) + 4, y.toFixed(y === 0 || y === 1 ? 0 : 2), { 'text-anchor': 'end' });
+      });
+
+      [0, 1, 2, 3, 4, 5, 6, 7, 8].forEach(x => {
+        svg.appendChild(el('line', { x1: sx(x), y1: sy(0), x2: sx(x), y2: sy(1), stroke: grid, 'stroke-width': 1 }));
+        addText(sx(x), sy(0) + 25, String(x), { 'text-anchor': 'middle' });
+      });
+
+      svg.appendChild(el('line', { x1: sx(0), y1: sy(0), x2: sx(xMax), y2: sy(0), stroke: line, 'stroke-width': 1.5 }));
+      svg.appendChild(el('line', { x1: sx(0), y1: sy(0), x2: sx(0), y2: sy(1.04), stroke: line, 'stroke-width': 1.5 }));
+      addText(sx(xMax), sy(0) + 45, 'x', { 'text-anchor': 'end', fill: text });
+      addText(sx(0) - 42, sy(1.04), 'f(x)', { fill: text });
+
+      if (mode === 'improper') {
+        svg.appendChild(el('path', { d: areaPath(xMax), fill: tail, stroke: 'none' }));
+      }
+      svg.appendChild(el('path', { d: areaPath(b), fill, stroke: 'none' }));
+      svg.appendChild(el('path', { d: linePath(samples(xMax)), fill: 'none', stroke: accent, 'stroke-width': 3, 'stroke-linecap': 'round' }));
+      svg.appendChild(el('line', {
+        x1: sx(b), y1: sy(0), x2: sx(b), y2: sy(Math.exp(-b)),
+        stroke: accent, 'stroke-width': 1.5, 'stroke-dasharray': '5 5'
+      }));
+
+      addText(sx(.72), sy(Math.exp(-.72)) - 17, 'f(x) = e⁻ˣ', { fill: text, 'font-size': 14 });
+      addText(sx(b), sy(0) - 12, `b = ${b.toFixed(1)}`, { 'text-anchor': 'middle', fill: text, 'font-size': 13 });
+
+      if (mode === 'improper') {
+        addText(sx(7.9), sy(.12), '→ ∞', { 'text-anchor': 'end', fill: accent, 'font-size': 18 });
+      }
+
+      const area = 1 - Math.exp(-b);
+      areaValue.textContent = area.toFixed(4);
+      endpointValue.textContent = b.toFixed(1);
+
+      if (mode === 'definite') {
+        formula.textContent = `∫₀ᵇ e⁻ˣ dx = 1 − e⁻ᵇ = ${area.toFixed(4)}`;
+        meaning.textContent = `The shaded area stops at b = ${b.toFixed(1)}.`;
+      } else {
+        formula.textContent = '∫₀∞ e⁻ˣ dx = lim b→∞ (1 − e⁻ᵇ) = 1';
+        meaning.textContent = `At b = ${b.toFixed(1)}, the area is ${area.toFixed(4)}. As b grows, it approaches 1.`;
+      }
+    }
+
+    function setMode(next) {
+      cancelAnimationFrame(animationFrame);
+      mode = next;
+      modeButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.mode === mode)));
+      growButton.hidden = mode !== 'improper';
+      endpointLabel.textContent = mode === 'definite' ? 'Ending point b' : 'Temporary endpoint b';
+      slider.value = mode === 'definite' ? 3 : 1;
+      draw();
+    }
+
+    function animateGrowth() {
+      cancelAnimationFrame(animationFrame);
+      const startValue = Number(slider.value) >= 7.9 ? .6 : Number(slider.value);
+      slider.value = startValue;
+      const startTime = performance.now();
+      const duration = reduceMotion.matches ? 0 : 1900;
+
+      function step(now) {
+        const progress = duration === 0 ? 1 : Math.min(1, (now - startTime) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        slider.value = (startValue + (8 - startValue) * eased).toFixed(2);
+        draw();
+        if (progress < 1) animationFrame = requestAnimationFrame(step);
+      }
+
+      animationFrame = requestAnimationFrame(step);
+    }
+
+    modeButtons.forEach(button => button.addEventListener('click', () => setMode(button.dataset.mode)));
+    slider.addEventListener('input', draw);
+    growButton.addEventListener('click', animateGrowth);
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+    draw();
+  </script>
+</body>
+</html>

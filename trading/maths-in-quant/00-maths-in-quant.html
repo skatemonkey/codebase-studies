@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quantitative Finance Mathematics Map</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --page: #07090c;
+      --surface: #0c0f13;
+      --surface-raised: #11151a;
+      --line: #222830;
+      --line-soft: #171c22;
+      --text: #f2f4f6;
+      --muted: #919aa5;
+      --quiet: #5d6671;
+      --foundation: #42d39b;
+      --foundation-soft: rgba(66, 211, 155, 0.10);
+      --core: #6f9cff;
+      --core-soft: rgba(111, 156, 255, 0.11);
+      --advanced: #f0b457;
+      --advanced-soft: rgba(240, 180, 87, 0.11);
+      --application: #ec6c91;
+      --application-soft: rgba(236, 108, 145, 0.11);
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-width: 320px;
+      background: var(--page);
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(circle at 50% -20%, rgba(111, 156, 255, 0.08), transparent 38%),
+        var(--page);
+      color: var(--text);
+      font-family: Inter, "Segoe UI", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    button { font: inherit; }
+
+    .shell {
+      width: min(1440px, calc(100% - 32px));
+      margin: 24px auto;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(12, 15, 19, 0.96);
+      box-shadow: 0 24px 90px rgba(0, 0, 0, 0.32);
+    }
+
+    .topbar {
+      display: flex;
+      min-height: 58px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--line);
+      font-family: var(--mono);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 18px;
+      height: 18px;
+      grid-template-columns: repeat(3, 1fr);
+      align-items: end;
+      gap: 2px;
+    }
+
+    .brand-mark span {
+      display: block;
+      border-radius: 1px 1px 0 0;
+      background: var(--foundation);
+    }
+
+    .brand-mark span:nth-child(1) { height: 7px; }
+    .brand-mark span:nth-child(2) { height: 12px; }
+    .brand-mark span:nth-child(3) { height: 17px; }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--foundation);
+      box-shadow: 0 0 12px rgba(66, 211, 155, 0.8);
+    }
+
+    .intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 28px;
+      align-items: end;
+      padding: 34px 34px 26px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .eyebrow {
+      margin: 0 0 9px;
+      color: var(--core);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 850px;
+      margin: 0;
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 500;
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+    }
+
+    .intro-copy {
+      max-width: 760px;
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .instruction {
+      max-width: 250px;
+      margin: 0;
+      padding-left: 16px;
+      border-left: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .instruction strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .map-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line-soft);
+      font-family: var(--mono);
+    }
+
+    .selected-copy {
+      min-width: 0;
+      color: var(--muted);
+      font-size: 11px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .selected-copy span { color: var(--text); }
+
+    .reset-button {
+      flex: 0 0 auto;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: var(--surface-raised);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+    }
+
+    .reset-button:hover,
+    .reset-button:focus-visible {
+      border-color: #3a424d;
+      color: var(--text);
+      outline: none;
+    }
+
+    .map {
+      position: relative;
+      isolation: isolate;
+      padding: 26px 26px 18px;
+    }
+
+    .connections {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .edge {
+      fill: none;
+      stroke: #3c444e;
+      stroke-width: 1;
+      opacity: 0.22;
+      transition: opacity 180ms ease, stroke 180ms ease, stroke-width 180ms ease;
+    }
+
+    .edge.is-active {
+      stroke: #c4cad1;
+      stroke-width: 1.7;
+      opacity: 0.78;
+    }
+
+    .layer {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 152px minmax(0, 1fr);
+      gap: 20px;
+      align-items: stretch;
+      padding: 20px 0;
+    }
+
+    .layer + .layer { border-top: 1px solid var(--line-soft); }
+
+    .layer-label {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      padding-left: 4px;
+    }
+
+    .layer-index {
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+    }
+
+    .layer-label h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .layer-label p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .nodes {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .node {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      min-height: 86px;
+      min-width: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface-raised);
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 160ms ease, background 160ms ease, opacity 160ms ease, transform 160ms ease;
+    }
+
+    .node:hover,
+    .node:focus-visible {
+      transform: translateY(-2px);
+      border-color: #46505c;
+      outline: none;
+    }
+
+    .node-name {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .node-cn {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 400;
+    }
+
+    .node-code {
+      color: var(--quiet);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .foundation .layer-label h2,
+    .foundation .node-code { color: var(--foundation); }
+    .core .layer-label h2,
+    .core .node-code { color: var(--core); }
+    .advanced .layer-label h2,
+    .advanced .node-code { color: var(--advanced); }
+    .application .layer-label h2,
+    .application .node-code { color: var(--application); }
+
+    .foundation .node { background: linear-gradient(145deg, var(--foundation-soft), var(--surface-raised) 58%); }
+    .core .node { background: linear-gradient(145deg, var(--core-soft), var(--surface-raised) 58%); }
+    .advanced .node { background: linear-gradient(145deg, var(--advanced-soft), var(--surface-raised) 58%); }
+    .application .node { background: linear-gradient(145deg, var(--application-soft), var(--surface-raised) 58%); }
+
+    .node.is-dimmed { opacity: 0.25; }
+
+    .node.is-active {
+      opacity: 1;
+      border-color: currentColor;
+      box-shadow: 0 0 0 1px currentColor inset, 0 10px 32px rgba(0, 0, 0, 0.22);
+    }
+
+    .foundation .node.is-active { color: var(--foundation); }
+    .core .node.is-active { color: var(--core); }
+    .advanced .node.is-active { color: var(--advanced); }
+    .application .node.is-active { color: var(--application); }
+    .node.is-active .node-name { color: var(--text); }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      padding: 15px 26px 18px 198px;
+      border-top: 1px solid var(--line-soft);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .legend-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--legend-color);
+    }
+
+    .compact-note { display: none; }
+
+    @media (max-width: 1080px) {
+      .nodes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .connections { display: none; }
+      .compact-note { display: inline; }
+      .node.is-dimmed { opacity: 0.35; }
+    }
+
+    @media (max-width: 760px) {
+      .shell {
+        width: min(100% - 16px, 1440px);
+        margin: 8px auto;
+        border-radius: 10px;
+      }
+
+      .topbar { padding: 0 14px; }
+      .status { display: none; }
+
+      .intro {
+        grid-template-columns: 1fr;
+        padding: 26px 18px 22px;
+      }
+
+      .instruction {
+        max-width: none;
+        padding-left: 0;
+        border-left: 0;
+      }
+
+      .map-toolbar { padding: 12px 14px; }
+      .selected-copy { white-space: normal; }
+      .map { padding: 12px 14px; }
+
+      .layer {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 18px 0;
+      }
+
+      .nodes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .node { min-height: 82px; }
+      .legend { padding: 14px; }
+    }
+
+    @media (max-width: 480px) {
+      .nodes { grid-template-columns: 1fr; }
+      h1 { font-size: 30px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .node, .edge { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        Quantitative Finance / Knowledge Map
+      </div>
+      <div class="status">Interactive dependency view</div>
+    </header>
+
+    <section class="intro">
+      <div>
+        <p class="eyebrow">Mathematics → Methods → Applications</p>
+        <h1>How mathematics builds quantitative finance.</h1>
+        <p class="intro-copy">A layered map from mathematical foundations to the models used in quantitative practice.</p>
+      </div>
+      <p class="instruction">
+        <strong>Trace a pathway</strong>
+        Select any topic to isolate its prerequisites and the applications it supports.
+        <span class="compact-note"> Connections are simplified on smaller screens.</span>
+      </p>
+    </section>
+
+    <div class="map-toolbar">
+      <div class="selected-copy" id="selection-status" aria-live="polite">Viewing: <span>All knowledge paths</span></div>
+      <button class="reset-button" id="reset-map" type="button">Show all paths</button>
+    </div>
+
+    <section class="map" id="knowledge-map" aria-label="Quantitative finance mathematical knowledge map">
+      <svg class="connections" id="connections" aria-hidden="true"></svg>
+
+      <section class="layer foundation" aria-labelledby="foundation-title">
+        <div class="layer-label">
+          <span class="layer-index">LAYER 01 · CH 1–6</span>
+          <h2 id="foundation-title">Foundations</h2>
+          <p>数学基础</p>
+        </div>
+        <div class="nodes">
+          <button class="node" data-id="high-school" type="button"><span class="node-name">High-school mathematics<span class="node-cn">高中数学</span></span><span class="node-code">Foundation</span></button>
+          <button class="node" data-id="functions-limits" type="button"><span class="node-name">Functions &amp; limits<span class="node-cn">函数与极限</span></span><span class="node-code">Foundation</span></button>
+          <button class="node" data-id="calculus" type="button"><span class="node-name">Derivatives &amp; integrals<span class="node-cn">导数与积分</span></span><span class="node-code">Foundation</span></button>
+          <button class="node" data-id="logs-series" type="button"><span class="node-name">Logarithms &amp; series<span class="node-cn">对数与级数</span></span><span class="node-code">Foundation</span></button>
+          <button class="node" data-id="series-expansion" type="button"><span class="node-name">Series expansions<span class="node-cn">级数展开</span></span><span class="node-code">Foundation</span></button>
+        </div>
+      </section>
+
+      <section class="layer core" aria-labelledby="core-title">
+        <div class="layer-label">
+          <span class="layer-index">LAYER 02 · CH 7–15</span>
+          <h2 id="core-title">Core mathematics</h2>
+          <p>核心数学</p>
+        </div>
+        <div class="nodes">
+          <button class="node" data-id="probability" type="button"><span class="node-name">Probability theory<span class="node-cn">概率论</span></span><span class="node-code">Core</span></button>
+          <button class="node" data-id="random-variables" type="button"><span class="node-name">Random variables &amp; distributions<span class="node-cn">随机变量与分布</span></span><span class="node-code">Core</span></button>
+          <button class="node" data-id="moments" type="button"><span class="node-name">Expectation, variance &amp; covariance<span class="node-cn">期望、方差与协方差</span></span><span class="node-code">Core</span></button>
+          <button class="node" data-id="linear-algebra" type="button"><span class="node-name">Linear algebra<span class="node-cn">线性代数</span></span><span class="node-code">Core</span></button>
+          <button class="node" data-id="matrix-decomposition" type="button"><span class="node-name">Matrix operations &amp; eigendecomposition<span class="node-cn">矩阵运算与特征分解</span></span><span class="node-code">Core</span></button>
+        </div>
+      </section>
+
+      <section class="layer advanced" aria-labelledby="advanced-title">
+        <div class="layer-label">
+          <span class="layer-index">LAYER 03 · CH 16–26</span>
+          <h2 id="advanced-title">Advanced methods</h2>
+          <p>进阶方法</p>
+        </div>
+        <div class="nodes">
+          <button class="node" data-id="testing-regression" type="button"><span class="node-name">Hypothesis testing &amp; regression<span class="node-cn">假设检验与回归分析</span></span><span class="node-code">Inference</span></button>
+          <button class="node" data-id="time-series" type="button"><span class="node-name">Time series · ARIMA / GARCH<span class="node-cn">时间序列</span></span><span class="node-code">Dynamic models</span></button>
+          <button class="node" data-id="optimization" type="button"><span class="node-name">Optimization &amp; convex optimization<span class="node-cn">优化理论与凸优化</span></span><span class="node-code">Decision</span></button>
+          <button class="node" data-id="stochastic-analysis" type="button"><span class="node-name">Stochastic analysis &amp; Itô's lemma<span class="node-cn">随机分析与伊藤引理</span></span><span class="node-code">Stochastic models</span></button>
+          <button class="node" data-id="monte-carlo" type="button"><span class="node-name">Monte Carlo simulation<span class="node-cn">蒙特卡洛模拟</span></span><span class="node-code">Numerical method</span></button>
+        </div>
+      </section>
+
+      <section class="layer application" aria-labelledby="application-title">
+        <div class="layer-label">
+          <span class="layer-index">LAYER 04 · PRACTICE</span>
+          <h2 id="application-title">Applications</h2>
+          <p>量化实践</p>
+        </div>
+        <div class="nodes">
+          <button class="node" data-id="asset-allocation" type="button"><span class="node-name">Asset allocation · Mean–variance<span class="node-cn">资产配置 · 均值—方差</span></span><span class="node-code">Portfolio</span></button>
+          <button class="node" data-id="factor-investing" type="button"><span class="node-name">Factor investing · CAPM / FF<span class="node-cn">因子投资</span></span><span class="node-code">Selection</span></button>
+          <button class="node" data-id="stat-arb" type="button"><span class="node-name">Statistical arbitrage · Pairs trading<span class="node-cn">统计套利 · 配对交易</span></span><span class="node-code">Relative value</span></button>
+          <button class="node" data-id="derivatives-pricing" type="button"><span class="node-name">Derivatives pricing · BS model<span class="node-cn">衍生品定价</span></span><span class="node-code">Pricing</span></button>
+          <button class="node" data-id="risk-management" type="button"><span class="node-name">Risk management · VaR / CVaR<span class="node-cn">风险管理</span></span><span class="node-code">Risk</span></button>
+        </div>
+      </section>
+    </section>
+
+    <footer class="legend" aria-label="Layer legend">
+      <span class="legend-item"><span class="legend-dot" style="--legend-color: var(--foundation)"></span>Foundations 数学基础</span>
+      <span class="legend-item"><span class="legend-dot" style="--legend-color: var(--core)"></span>Core mathematics 核心数学</span>
+      <span class="legend-item"><span class="legend-dot" style="--legend-color: var(--advanced)"></span>Advanced methods 进阶方法</span>
+      <span class="legend-item"><span class="legend-dot" style="--legend-color: var(--application)"></span>Applications 量化实践</span>
+    </footer>
+  </main>
+
+  <script>
+    const edgePairs = [
+      ["high-school", "probability"],
+      ["high-school", "linear-algebra"],
+      ["functions-limits", "random-variables"],
+      ["calculus", "moments"],
+      ["calculus", "optimization"],
+      ["logs-series", "testing-regression"],
+      ["series-expansion", "monte-carlo"],
+      ["probability", "testing-regression"],
+      ["probability", "time-series"],
+      ["random-variables", "stochastic-analysis"],
+      ["moments", "optimization"],
+      ["linear-algebra", "optimization"],
+      ["matrix-decomposition", "monte-carlo"],
+      ["testing-regression", "factor-investing"],
+      ["testing-regression", "stat-arb"],
+      ["time-series", "stat-arb"],
+      ["time-series", "risk-management"],
+      ["optimization", "asset-allocation"],
+      ["optimization", "risk-management"],
+      ["stochastic-analysis", "derivatives-pricing"],
+      ["monte-carlo", "derivatives-pricing"],
+      ["monte-carlo", "risk-management"]
+    ];
+
+    const map = document.getElementById("knowledge-map");
+    const svg = document.getElementById("connections");
+    const status = document.getElementById("selection-status");
+    const resetButton = document.getElementById("reset-map");
+    const nodes = new Map(
+      [...document.querySelectorAll(".node")].map((node) => [node.dataset.id, node])
+    );
+
+    const parents = new Map();
+    const children = new Map();
+    edgePairs.forEach(([from, to]) => {
+      if (!children.has(from)) children.set(from, new Set());
+      if (!parents.has(to)) parents.set(to, new Set());
+      children.get(from).add(to);
+      parents.get(to).add(from);
+    });
+
+    let selectedId = null;
+
+    function collect(start, directionMap, result = new Set()) {
+      const next = directionMap.get(start) || [];
+      next.forEach((id) => {
+        if (result.has(id)) return;
+        result.add(id);
+        collect(id, directionMap, result);
+      });
+      return result;
+    }
+
+    function nodePoint(node, mapRect, edge) {
+      const rect = node.getBoundingClientRect();
+      return {
+        x: rect.left - mapRect.left + rect.width / 2,
+        y: edge === "bottom" ? rect.bottom - mapRect.top : rect.top - mapRect.top
+      };
+    }
+
+    function pathFor(start, end) {
+      const dy = end.y - start.y;
+      const bend = Math.max(28, dy * 0.48);
+      return `M ${start.x} ${start.y} C ${start.x} ${start.y + bend}, ${end.x} ${end.y - bend}, ${end.x} ${end.y}`;
+    }
+
+    function drawEdges() {
+      if (window.innerWidth <= 1080) {
+        svg.replaceChildren();
+        return;
+      }
+
+      const mapRect = map.getBoundingClientRect();
+      svg.setAttribute("viewBox", `0 0 ${mapRect.width} ${mapRect.height}`);
+      svg.replaceChildren();
+
+      edgePairs.forEach(([from, to]) => {
+        const source = nodes.get(from);
+        const target = nodes.get(to);
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("class", "edge");
+        path.dataset.from = from;
+        path.dataset.to = to;
+        path.setAttribute("d", pathFor(nodePoint(source, mapRect, "bottom"), nodePoint(target, mapRect, "top")));
+        svg.appendChild(path);
+      });
+
+      updateSelection(selectedId);
+    }
+
+    function updateSelection(id) {
+      selectedId = id;
+      const activeNodes = new Set();
+
+      if (id) {
+        activeNodes.add(id);
+        collect(id, parents, activeNodes);
+        collect(id, children, activeNodes);
+      }
+
+      nodes.forEach((node, nodeId) => {
+        node.classList.toggle("is-active", Boolean(id) && activeNodes.has(nodeId));
+        node.classList.toggle("is-dimmed", Boolean(id) && !activeNodes.has(nodeId));
+        node.setAttribute("aria-pressed", String(Boolean(id) && nodeId === id));
+      });
+
+      document.querySelectorAll(".edge").forEach((edge) => {
+        const onPath = Boolean(id) && activeNodes.has(edge.dataset.from) && activeNodes.has(edge.dataset.to);
+        edge.classList.toggle("is-active", onPath);
+      });
+
+      if (!id) {
+        status.innerHTML = "Viewing: <span>All knowledge paths</span>";
+        return;
+      }
+
+      const node = nodes.get(id);
+      const label = node.querySelector(".node-name").childNodes[0].textContent.trim();
+      status.innerHTML = `Selected: <span>${label}</span> · ${activeNodes.size - 1} connected topics`;
+    }
+
+    nodes.forEach((node, id) => {
+      node.setAttribute("aria-pressed", "false");
+      node.addEventListener("click", () => updateSelection(selectedId === id ? null : id));
+    });
+
+    resetButton.addEventListener("click", () => updateSelection(null));
+
+    let resizeFrame;
+    const resizeObserver = new ResizeObserver(() => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(drawEdges);
+    });
+    resizeObserver.observe(map);
+    window.addEventListener("load", drawEdges);
+  </script>
+</body>
+</html>
